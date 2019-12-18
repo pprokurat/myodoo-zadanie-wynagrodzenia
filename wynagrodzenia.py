@@ -6,24 +6,27 @@ from bs4 import BeautifulSoup
 
 wynagrodzenia = []
 
-#obiekt klasy wynagrodzenie zawiera informacje o wysokości wynagrodzenia brutto oraz odpowiadającej mu wysokości wynagrodzenia brutto
+
+# obiekt klasy wynagrodzenie zawiera informacje o wysokości wynagrodzenia brutto
+# oraz odpowiadającej mu wysokości wynagrodzenia brutto
 class Wynagrodzenie:
     def __init__(self, brutto, netto):
         self.brutto = brutto
         self.netto = netto
 
 
-#funkcja obliczająca pojedynczą wartość netto na podstawie wejściowej wartości brutto za pośrednictwem zewnętrznego serwisu wynagrodzenia.pl
+# funkcja obliczająca pojedynczą wartość netto na podstawie wejściowej wartości brutto
+# za pośrednictwem zewnętrznego serwisu wynagrodzenia.pl
 def get_net_salary(gross):
     br = mechanize.Browser()
 
     br.set_handle_robots(False)
     br.addheaders = [('User-agent', 'Firefox')]
 
-    #połączenie z serwisem wynagrodzenia.pl
+    # połączenie z serwisem wynagrodzenia.pl
     br.open('https://wynagrodzenia.pl/kalkulator-wynagrodzen')
 
-    #wypełnienie formularza
+    # wypełnienie formularza
     br.select_form('sedlak_calculator')
     br.form['sedlak_calculator[contractType]'] = ['work', ]
     br.form['sedlak_calculator[calculateWay]'] = ['gross', ]
@@ -55,35 +58,35 @@ def get_net_salary(gross):
     br.form['work_accidentPercent'] = '1.67'
     br.form['nonwork_accidentPercent'] = '1.67'
 
-    #przesłanie formularza
+    # przesłanie formularza
     resp2 = br.submit()
 
-    #odczytanie wynikowej wartości
+    # odczytanie wynikowej wartości
     html = resp2.read().decode('utf-8')
     soup = BeautifulSoup(html, features="html5lib")
     netsum_tmp = soup.find_all('span', {'class': 'bold'})[1].text
 
-    #formatowanie wyniku
+    # formatowanie wyniku
     netsum_tmp = netsum_tmp.split(' ')[0] + netsum_tmp.split(' ')[1]
     result = netsum_tmp.replace(',', '.')
 
     return result
 
 
-#funkcja sprawdzająca wartości netto odpowiadające poszczególnym wartościom brutto, podanym jako argumenty aplikacji
+# funkcja sprawdzająca wartości netto odpowiadające poszczególnym wartościom brutto, podanym jako argumenty aplikacji
 def check_net_salaries():
     for arg in sys.argv[1:]:
         wynagrodzenia.append(Wynagrodzenie(float(arg), float(get_net_salary(arg))))
 
 
-#funkcja wypisująca wyniki w konsoli
+# funkcja wypisująca wyniki w konsoli
 def display_net_salaries():
     print("Wynagrodzenia:")
     for w in wynagrodzenia:
         print("kwota brutto: %.2f, kwota netto: %.2f" % (w.brutto, w.netto))
 
 
-#funkcja wyświetlająca wyniki w formie wykresu
+# funkcja wyświetlająca wyniki w formie wykresu
 def display_plot():
     # stworzenie wykresu
     figure = plt.figure(0)
@@ -114,11 +117,11 @@ def display_plot():
     plt.show()
 
 
-#sprawdzenie wartości netto
+# sprawdzenie wartości netto
 check_net_salaries()
 
-#wyświetlenie wyników
+# wyświetlenie wyników
 display_net_salaries()
 
-#wyświetlenie wykresu
+# wyświetlenie wykresu
 display_plot()
