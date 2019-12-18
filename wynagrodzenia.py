@@ -8,14 +8,17 @@ brutto = [] #kwoty brutto
 netto = [] #kwoty netto
 
 
+#funkcja obliczająca pojedynczą wartość netto na podstawie wejściowej wartości brutto za pośrednictwem zewnętrznego serwisu wynagrodzenia.pl
 def get_net_salary(gross):
     br = mechanize.Browser()
 
     br.set_handle_robots(False)
     br.addheaders = [('User-agent', 'Firefox')]
 
+    #połączenie z serwisem wynagrodzenia.pl
     br.open('https://wynagrodzenia.pl/kalkulator-wynagrodzen')
 
+    #wypełnienie formularza
     br.select_form('sedlak_calculator')
     br.form['sedlak_calculator[contractType]'] = ['work', ]
     br.form['sedlak_calculator[calculateWay]'] = ['gross', ]
@@ -47,18 +50,22 @@ def get_net_salary(gross):
     br.form['work_accidentPercent'] = '1.67'
     br.form['nonwork_accidentPercent'] = '1.67'
 
+    #przesłanie formularza
     resp2 = br.submit()
 
+    #odczytanie wynikowej wartości
     html = resp2.read().decode('utf-8')
     soup = BeautifulSoup(html, features="html5lib")
     netsum_tmp = soup.find_all('span', {'class': 'bold'})[1].text
 
+    #formatowanie wyniku
     netsum_tmp = netsum_tmp.split(' ')[0] + netsum_tmp.split(' ')[1]
     result = netsum_tmp.replace(',', '.')
 
     return result
 
 
+#funkcja sprawdzająca wartości netto odpowiadające poszczególnym wartościom brutto, podanym jako argumenty aplikacji
 def check_net_salaries():
     for arg in sys.argv[1:]:
         brutto.append(float(arg))
@@ -69,6 +76,7 @@ def check_net_salaries():
     netto.sort()
 
 
+#funkcja wyświetlająca wyniki w formie wykresu
 def display_plot():
     # stworzenie wykresu
     figure = plt.figure(0)
@@ -92,5 +100,8 @@ def display_plot():
     plt.show()
 
 
+#sprawdzenie wartości netto
 check_net_salaries()
+
+#wyświetlenie wykresu
 display_plot()
