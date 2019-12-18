@@ -76,6 +76,13 @@ def check_net_salaries():
     netto.sort()
 
 
+#funkcja wypisująca wyniki w konsoli
+def display_net_salaries():
+    print("Wynagrodzenia:")
+    for i in range(0,len(brutto)):
+        print("kwota brutto: %.2f, kwota netto: %.2f" % (brutto[i], netto[i]))
+
+
 #funkcja wyświetlająca wyniki w formie wykresu
 def display_plot():
     # stworzenie wykresu
@@ -102,6 +109,9 @@ def display_plot():
 
 #sprawdzenie wartości netto
 check_net_salaries()
+
+#wyświetlenie wyników
+display_net_salaries()
 
 #wyświetlenie wykresu
 display_plot()
