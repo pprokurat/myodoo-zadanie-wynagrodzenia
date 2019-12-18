@@ -4,8 +4,13 @@ import matplotlib.pyplot as plt
 import mechanize
 from bs4 import BeautifulSoup
 
-brutto = [] #kwoty brutto
-netto = [] #kwoty netto
+wynagrodzenia = []
+
+#obiekt klasy wynagrodzenie zawiera informacje o wysokości wynagrodzenia brutto oraz odpowiadającej mu wysokości wynagrodzenia brutto
+class Wynagrodzenie:
+    def __init__(self, brutto, netto):
+        self.brutto = brutto
+        self.netto = netto
 
 
 #funkcja obliczająca pojedynczą wartość netto na podstawie wejściowej wartości brutto za pośrednictwem zewnętrznego serwisu wynagrodzenia.pl
@@ -68,19 +73,14 @@ def get_net_salary(gross):
 #funkcja sprawdzająca wartości netto odpowiadające poszczególnym wartościom brutto, podanym jako argumenty aplikacji
 def check_net_salaries():
     for arg in sys.argv[1:]:
-        brutto.append(float(arg))
-        netto_tmp = get_net_salary(arg)
-        netto.append(float(netto_tmp))
-
-    brutto.sort()
-    netto.sort()
+        wynagrodzenia.append(Wynagrodzenie(float(arg), float(get_net_salary(arg))))
 
 
 #funkcja wypisująca wyniki w konsoli
 def display_net_salaries():
     print("Wynagrodzenia:")
-    for i in range(0,len(brutto)):
-        print("kwota brutto: %.2f, kwota netto: %.2f" % (brutto[i], netto[i]))
+    for w in wynagrodzenia:
+        print("kwota brutto: %.2f, kwota netto: %.2f" % (w.brutto, w.netto))
 
 
 #funkcja wyświetlająca wyniki w formie wykresu
@@ -88,6 +88,13 @@ def display_plot():
     # stworzenie wykresu
     figure = plt.figure(0)
     figure.canvas.set_window_title('Wynagrodzenia')
+
+    brutto = []
+    netto = []
+    for w in wynagrodzenia:
+        brutto.append(w.brutto)
+        netto.append(w.netto)
+
     plt.plot(brutto, netto)
 
     # skalowanie osi x
