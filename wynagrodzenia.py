@@ -8,7 +8,7 @@ wynagrodzenia = []
 
 
 # obiekt klasy wynagrodzenie zawiera informacje o wysokości wynagrodzenia brutto
-# oraz odpowiadającej mu wysokości wynagrodzenia brutto
+# oraz odpowiadającej mu wysokości wynagrodzenia netto
 class Wynagrodzenie:
     def __init__(self, brutto, netto):
         self.brutto = brutto
