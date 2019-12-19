@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 wynagrodzenia = []
 
 
-# obiekt klasy wynagrodzenie zawiera informacje o wysokości wynagrodzenia brutto
+# obiekt klasy Wynagrodzenie zawiera informacje o wysokości wynagrodzenia brutto
 # oraz odpowiadającej mu wysokości wynagrodzenia netto
 class Wynagrodzenie:
     def __init__(self, brutto, netto):
@@ -29,8 +29,8 @@ def get_net_salary(gross):
     except Exception as err:
         print(err)
         return
-    #
-    #     # wypełnienie formularza
+
+    # wypełnienie formularza
     br.select_form('sedlak_calculator')
     br.form['sedlak_calculator[contractType]'] = ['work', ]
     br.form['sedlak_calculator[calculateWay]'] = ['gross', ]
