@@ -3,7 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import mechanize
 from bs4 import BeautifulSoup
-import requests
 
 wynagrodzenia = []
 
