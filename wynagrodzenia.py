@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import mechanize
 from bs4 import BeautifulSoup
+import requests
 
 wynagrodzenia = []
 
@@ -24,9 +25,13 @@ def get_net_salary(gross):
     br.addheaders = [('User-agent', 'Firefox')]
 
     # połączenie z serwisem wynagrodzenia.pl
-    br.open('https://wynagrodzenia.pl/kalkulator-wynagrodzen')
-
-    # wypełnienie formularza
+    try:
+        br.open('https://wynagrodzenia.pl/kalkulator-wynagrodzen')
+    except Exception as err:
+        print(err)
+        return
+    #
+    #     # wypełnienie formularza
     br.select_form('sedlak_calculator')
     br.form['sedlak_calculator[contractType]'] = ['work', ]
     br.form['sedlak_calculator[calculateWay]'] = ['gross', ]
@@ -75,8 +80,19 @@ def get_net_salary(gross):
 
 # funkcja sprawdzająca wartości netto odpowiadające poszczególnym wartościom brutto, podanym jako argumenty aplikacji
 def check_net_salaries():
+    if len(sys.argv) <= 1:
+        print("Błąd: Nie podano żadnych argumentów")
+        return 1  # w przypadku braku argumentów zostaje zwrócony kod błędu 1
+
     for arg in sys.argv[1:]:
-        wynagrodzenia.append(Wynagrodzenie(float(arg), float(get_net_salary(arg))))
+        try:
+            wynagrodzenia.append(Wynagrodzenie(float(arg), float(get_net_salary(arg))))
+        except ValueError:
+            print("Błąd: podano nieprawidłową wartość")
+            return 2  # w przypadku wystąpienia nieprawidłowej wartości zostaje zwrócony kod błędu 2
+        except Exception:
+            print("Błąd: błąd zewnętrznego serwisu")
+            return 3  # w przypadku wystąpienia zewnętrznego błędu zostaje zwrócony kod błędu 3
 
 
 # funkcja wypisująca wyniki w konsoli
@@ -98,7 +114,7 @@ def display_plot():
         brutto.append(w.brutto)
         netto.append(w.netto)
 
-    plt.plot(brutto, netto)
+    plt.plot(brutto, netto, '--o')
 
     # skalowanie osi x
     xaxis_max = round(max(brutto), -3) + 1000
@@ -114,14 +130,29 @@ def display_plot():
     plt.title("Wynagrodzenia", fontweight='bold')
     plt.xlabel("brutto", fontweight='bold')
     plt.ylabel("netto", fontweight='bold')
+
+    plt.grid()
     plt.show()
 
 
-# sprawdzenie wartości netto
-check_net_salaries()
+def main():
+    print('\nProszę czekać, trwa obliczanie wartości netto ...\n')
 
-# wyświetlenie wyników
-display_net_salaries()
+    # sprawdzenie wartości netto
+    # (w przypadku wystąpienia błędu działanie aplikacji zostaje przerwane)
+    check = check_net_salaries()
+    if check == 1 or check == 2 or check == 3:
+        return
 
-# wyświetlenie wykresu
-display_plot()
+    # wyświetlenie wyników
+    display_net_salaries()
+
+    # wyświetlenie wykresu
+    display_plot()
+
+
+if __name__=="__main__":
+    main()
+
+
+
