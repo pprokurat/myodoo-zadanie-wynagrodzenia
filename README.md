@@ -1,6 +1,6 @@
 # Wynagrodzenia
 
-Aplikacja służy do obliczania wynagrodzeń netto na podstawie podanych kwot brutto z użyciem zewnętrznego serwisu wynagrodzenia.pl.
+Aplikacja służy do obliczania wynagrodzeń netto na podstawie podanych kwot brutto z użyciem zewnętrznego serwisu [wynagrodzenia.pl](https://wynagrodzenia.pl/kalkulator-wynagrodzen).
 Kwoty netto obliczane są według domyślnych ustawień kalkulatora dla umowy o pracę.
 Aplikacja mogłaby potencjalnie zostać rozszerzona o funkcję podawania niestandardowych parametrów obliczeń, na przykład wyboru innego typu umowy.
 
