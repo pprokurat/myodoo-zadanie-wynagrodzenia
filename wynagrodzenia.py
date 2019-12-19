@@ -64,10 +64,14 @@ def get_net_salary(gross):
     br.form['nonwork_accidentPercent'] = '1.67'
 
     # przesłanie formularza
-    resp2 = br.submit()
+    try:
+        resp = br.submit()
+    except Exception as err:
+        print(err)
+        return
 
     # odczytanie wynikowej wartości
-    html = resp2.read().decode('utf-8')
+    html = resp.read().decode('utf-8')
     soup = BeautifulSoup(html, features="html5lib")
     netsum_tmp = soup.find_all('span', {'class': 'bold'})[1].text
 
